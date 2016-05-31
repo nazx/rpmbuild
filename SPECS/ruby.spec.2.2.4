@@ -1,0 +1,58 @@
+%define   debug_package   %{nil}
+%define   name            ruby
+%define   ruby_version    2.2.4
+%define   patch_level     %{nil}
+%define   _prefix         /usr/local
+
+Name:     %{name}
+Version:  %{ruby_version}
+Release:  0%{?dist}
+Group:    Development/Languages
+URL:      https://www.ruby-lang.org/ja/
+License:  (Ruby or BSD) and Public Domain
+Source:   http://cache.ruby-lang.org/pub/ruby/2.2/%{name}-%{version}.tar.gz
+Summary:  An interpreter of object-oriented scripting language
+BuildRequires:  openssl-devel readline-devel zlib-devel curl-devel
+BuildRequires:  libyaml-devel mysql-devel
+BuildRequires:  autoconf automake libtool
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+
+%description
+Ruby is the interpreted scripting language for quick and easy
+object-oriented programming.  It has many features to process text
+files and to do system management tasks (as in Perl).  It is simple,
+straight-forward, and extensible.
+
+%prep
+%{__rm} -rf $RPM_BUILD_ROOT
+
+%setup -q -n %{name}-%{version}
+
+%build
+./configure --prefix=%{_prefix}
+%{__make}
+
+%install
+%{__rm} -rf %{buildroot}
+%{__make} DESTDIR=%{buildroot} install
+
+%clean
+%{__rm} -rf $RPM_BUILD_ROOT
+
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
+
+%files
+%defattr(-,root,root,-)
+%doc COPYING GPL LEGAL ChangeLog
+%doc doc/ChangeLog-*
+%lang(ja) %doc COPYING.ja
+%{_prefix}/*
+
+%changelog
+* Thu Jan 14 2015 - jjj <jjj@nazx.jp> - 2.2.4
+- update for ruby-2.2.4
+* Sat Sep 28 2013 - jjj <jjj@nazx.jp> - 1.9.3-p448
+- initial release
+
