@@ -1,6 +1,0 @@
-/var/log/c-icap/*.log {
-    copytruncate
-    notifempty
-    missingok
-    delaycompress
-}
