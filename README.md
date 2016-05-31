@@ -15,6 +15,13 @@ CentOS6.x files for building
  > SOURCES/c-icap.sysconfig
 
 - - -
+- **c_icap_modules-0.4.3**
+
+[Project site](http://c-icap.sourceforge.net/) 
+
+ > SPECS/c_icap_modules.spec.0.4.3
+
+- - -
 - **mod_authn_otp-1.1.7**
 
 [Project site](https://github.com/archiecobbs/mod-authn-otp) 
