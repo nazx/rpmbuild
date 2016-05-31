@@ -1,7 +1,8 @@
 # rpmbuild
 CentOS6.x files for building
 
-- c_icap
+- c_icap **0.4.3**
+
 [Project site](http://c-icap.sourceforge.net/) 
 
  > SPECS/c_icap.spec.0.4.3
@@ -9,17 +10,20 @@ CentOS6.x files for building
  > SOURCES/c-icap.logrotate
  > SOURCES/c-icap.sysconfig
 
-- mod_authn_otp
+- mod_authn_otp **1.1.7**
+
 [Project site](https://github.com/archiecobbs/mod-authn-otp) 
 
  > SPECS/mod_authn_otp.spec.1.1.7
 
-- ruby
+- ruby **2.2.4**
+
 [Project site](http://www.ruby-lang.org/) 
 
  > SPECS/ruby.spec.2.2.4
 
-- xtables-addons 
+- xtables-addons **1.47.1**
+
 [Project site](http://xtables-addons.sourceforge.net/) 
 
  > SPECS/xtables-addons.spec.1.47.1
