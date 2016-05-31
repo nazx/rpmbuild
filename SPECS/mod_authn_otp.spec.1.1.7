@@ -1,0 +1,56 @@
+name:		mod_authn_otp
+License:	Apache License 2.0
+Group:		Applications/System
+Summary:	Apache web server module for two-factor authentication
+Version:	1.1.7
+Release:	1
+URL:	  https://github.com/archiecobbs/mod-authn-otp
+BuildRoot:	%{_tmppath}/%{name}-%{version}
+Source0:	%{name}-%{version}.tar.bz2
+BuildRequires:	httpd-devel openssl-devel
+BuildRequires:  autoconf automake libtool
+Requires:	httpd
+%define		debug_package %{nil}
+%define		apxs %{_sbindir}/apxs
+%define		apache apache2  
+%define		apache_libexecdir %(%{apxs} -q LIBEXECDIR)  
+%define		apache_sysconfdir %(%{apxs} -q SYSCONFDIR)  
+%define		apache_includedir %(%{apxs} -q INCLUDEDIR)  
+%define		apache_serverroot %(%{apxs} -q PREFIX)  
+%define		apache_localstatedir %(%{apxs} -q LOCALSTATEDIR)  
+%define		apache_mmn %(MMN=$(%{apxs} -q LIBEXECDIR)_MMN; test -x $MMN && $MMN) 
+
+%description
+mod_authn_otp - Apache module for one-time password authentication  mod_authn_otp is an Apache web server module for two-factor authentication using one-time passwords (OTP) generated via the HOTP/OATH algorithm defined in RFC 4226. This creates a simple way to protect a web site with one-time passwords, using any RFC 4226-compliant hardware or software token device. mod_authn_otp also supports the Mobile-OTP algorithm. 
+
+%prep
+%setup -q -n %{name}-%{version}
+
+%build
+./autogen.sh -c
+make %{?jobs:-j%jobs}
+ 
+%install
+mkdir -p $RPM_BUILD_ROOT/%{apache_libexecdir}
+mkdir -p $RPM_BUILD_ROOT/usr/sbin
+mkdir -p $RPM_BUILD_ROOT/%{_mandir}/man1
+install -m 755 .libs/mod_authn_otp.so $RPM_BUILD_ROOT/%{apache_libexecdir}
+install -m 755 otptool $RPM_BUILD_ROOT/usr/sbin/
+gzip -c otptool.1 > $RPM_BUILD_ROOT/%{_mandir}/man1/otptool.1.gz
+
+%files
+%defattr (-,root,root)
+%{apache_libexecdir}/mod_authn_otp.so
+/usr/sbin/otptool
+%{_mandir}/*/otptool*
+
+%changelog
+* Wed Jan 30 2016 - nazx <jjj@nazx.jp>
+- update for 1.1.7/CentOS 6.7
+* Sun Sep 08 2013 - nazx <jjj@nazx.jp>
+- update for 1.1.6/CentOS 6.3
+* Sun Feb 10 2013 - nazx <jjj@nazx.jp>
+- update for 1.1.5/CentOS 6.3
+* Wed Mar 16 2011 - Ronan LE MEILLAT
+- Initial release
+
