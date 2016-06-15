@@ -1,0 +1,101 @@
+#!/bin/bash
+#
+# chkconfig: 2345 13 87
+# description: Sophos SAV Dynamic Interface
+#
+# processname: savdid
+
+SAVDID=/opt/sophos-av/savdi/savdid
+PIDFILE=/var/run/savdid.pid
+
+# source function library
+. /etc/rc.d/init.d/functions
+
+RETVAL=0
+prog="savdid"
+
+case "$1" in
+ start)
+   echo -n $"Starting $prog: "
+
+   # Start savdid in daemon mode, no banner, and specifying
+   # the pidfile
+   $SAVDID -d -s -f $PIDFILE
+   RETVAL=$?
+
+   # Sleep a moment to let savdid get things worked out
+   sleep 1
+
+   # The presence of the pidfile indicates that it is still running
+   [ -f $PIDFILE ] && RETVAL=0
+   if [ $RETVAL -eq 0 ]; then
+    echo_success
+    touch /var/lock/subsys/savdid
+   else
+    echo_failure
+   fi
+   echo
+   ;;
+
+ stop)
+   echo -n $"Shutting down $prog: "
+
+   # Tell savdid to stop dead
+   [ -f $PIDFILE ] && kill -INT `cat $PIDFILE`
+   while [ -f $PIDFILE ]; do sleep 1; done
+
+   echo_success
+
+   rm -f /var/lock/subsys/savdid
+   echo
+   RETVAL=0
+   ;;
+
+ restart)
+   echo -n $"Shutting down $prog: "
+
+   # Tell savdid to exit gracefully
+   [ -f $PIDFILE ] && kill -TERM `cat $PIDFILE`
+   while [ -f $PIDFILE ]; do sleep 1; done
+
+   echo_success
+
+   echo
+   $0 start
+   RETVAL=$?
+   ;;
+
+ reload)
+   echo -n $"Reloading $prog"
+
+   if [ ! -f $PIDFILE ]; then
+    echo " $prog is not running"
+    RETVAL=1
+   else
+    kill -HUP `cat $PIDFILE`
+    RETVAL=0
+   fi
+   echo
+   ;;
+
+ condrestart)
+   if [ -f /var/lock/subsys/savdid ]; then
+    $0 stop
+    $0 start
+   fi
+   RETVAL=$?
+   ;;
+
+ status)
+   status savdid
+   RETVAL=$?
+   ;;
+
+ *)
+   echo $"Usage: $0
+   {start|stop|restart|reload|condrestart|status}"
+   exit 1
+   ;;
+
+esac
+exit $RETVAL
